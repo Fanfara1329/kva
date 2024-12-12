@@ -1,6 +1,7 @@
 n = int(input())
 v = sorted(list(map(int, input().split())))
-s, ans = sum(v), v[-1] * n
-for j in range(n):
-    ans = min(ans, v[j] * (j + 1) + v[-1] * (n - 1 - j) - s)
-print(ans)
+ans = n * v[-1] - sum(v)
+mn = 10 ** 20
+for i in range(n):
+    mn = min(mn, ans - (i + 1) * (v[-1] - v[i]))
+print(mn)
