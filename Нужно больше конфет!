@@ -3,11 +3,13 @@ if n == 1:
     print(0)
     exit(0)
 v = sorted(list(map(int, input().split())))
-dp = [0 for _ in range(n + 1)]
-for i in range(1, n + 1):
-    dp[i] = dp[i - 1] + v[-1] - v[i - 1]
-ans = dp[-1]
-mn = 10 ** 9
-for i in range(n - 2, -1, -1):
-    mn = min(mn, ans - (i + 1) * (v[-1] - v[i]))
-print(mn)
+ans = v[-1] * n
+for j in v:
+    cur = 0
+    for i in range(n):
+        if v[i] <= j:
+            cur += j - v[i]
+        else:
+            cur += v[-1] - v[i]
+    ans = min(ans, cur)
+print(ans)
