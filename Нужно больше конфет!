@@ -1,15 +1,6 @@
 n = int(input())
-if n == 1:
-    print(0)
-    exit(0)
 v = sorted(list(map(int, input().split())))
-ans = v[-1] * n
-for j in v:
-    cur = 0
-    for i in range(n):
-        if v[i] <= j:
-            cur += j - v[i]
-        else:
-            cur += v[-1] - v[i]
-    ans = min(ans, cur)
+s, ans = sum(v), v[-1] * n
+for j in range(n):
+    ans = min(ans, v[j] * (j + 1) + v[-1] * (n - 1 - j) - s)
 print(ans)
