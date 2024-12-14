@@ -1,0 +1,45 @@
+with open('07') as f:
+    f = f.readlines()
+    n = int(f[0])
+    arr = list(map(int, f[1].split()))
+    size_block = 250
+    inf = 10 ** 6
+
+    block = [-inf] * (len(arr) // size_block + 1)
+
+    for i in range(len(arr)):
+        block[i // size_block] = max(block[i // size_block], arr[i])
+
+
+    def max_arr(left: int, right: int) -> int:
+        ans = -inf
+        while left <= right:
+            if left // size_block != right // size_block and left % size_block == 0:
+                ans = max(block[left // size_block], ans)
+                left += size_block
+            else:
+                ans = max(arr[left], ans)
+                left += 1
+        return ans
+
+
+    def change(index: int, value: int):
+        arr[index] = value
+        b = 0
+        #print(index // size_block * size_block, index // size_block * (size_block + 1) + 1, len(arr))
+        for x in range(index // size_block * size_block, min(index // size_block * (size_block + 1) + 1, len(arr))):
+            b = max(b, arr[x])
+        block[index // size_block] = b
+
+
+    q = int(f[2])
+    #cnt = 0
+    for i in f[3::]:
+        func, l, r = map(str, i.split())
+        if func == 's':
+            print(max_arr(int(l) - 1, int(r) - 1), end=' ')
+        else:
+            #cnt += 1
+            change(int(l) - 1, int(r))
+            #if cnt == 50:
+                #exit(0)
