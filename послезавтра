@@ -4,7 +4,7 @@ using namespace std;
 int main() {
     int d, m, y, x = 0;
     cin >> d >> m >> y;
-    d = d + 2;
+    d += 2;
     if (m == 1 || m == 3 || m == 5 || m == 7 || m == 8 || m == 10) {
         if (d > 31) {
             d = d % 31;
