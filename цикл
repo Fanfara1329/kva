@@ -1,0 +1,96 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+int n, m;
+int INF = 1e9;
+
+/*void dfs(int i, vector<int> &summ, vector<vector<int>> &v, int &a) {
+    if (summ[i] == 1) {
+        vec1 = vec;
+        b = a;
+        return;
+    }
+    summ[i] = 1;
+    for (int j = 0 ; j < n ; j++) {
+        if (v[i][j] != INF) {
+            vec.push_back(i + 1);
+            a += v[i][j];
+            dfs(j, summ, v, a);
+            a -= v[i][j];
+            vec.pop_back();
+        }
+    }
+    summ[i] = 2;
+}*/
+
+
+void print(vector<vector<int>> &v) {
+    for (auto i : v) {
+        for (auto j : i)
+            cout << j << ' ';
+        cout << "\n";
+    }
+    cout << "\n";
+}
+
+void pprint(vector<int> v) {
+    for (auto i : v)
+        cout << i << ' ';
+    cout << "\n";
+}
+
+int main() {
+    int w;
+    cin >> n;
+    vector<vector<int>> vec(n, vector<int>(n)), next(n, vector<int>(n, -1));
+    vector<int> used(n, -1);
+    for (int i = 0 ; i < n ; i++) {
+        for (int j = 0 ; j < n ; j++) {
+            cin >> w;
+            if (w == 1e5)
+                vec[i][j] = INF;
+            else {
+                vec[i][j] = w;
+                next[i][j] = j;
+            }
+        }
+    }
+    for (int i = 0 ; i < n ; i++) {
+        for (int k = 0 ; k < n ; k++) {
+            for (int j = 0 ; j < n ; j++) {
+                if (vec[j][k] > vec[j][i] + vec[i][k] && vec[j][i] != INF && vec[i][k] != INF) {
+                    vec[j][k] = max(-INF, vec[j][i] + vec[i][k]);
+                    next[j][k] = next[j][i];
+                    used[j] = next[j][i];
+                }
+            }
+        }
+    }
+    for (int i = 0 ; i < n ; i++) {
+        for (int j = 0 ; j < n ; j++) {
+            for (int t = 0 ; t < n ; t++) {
+                if (vec[t][t] < 0 && vec[i][t] != INF && vec[t][j] != INF) {
+                    int x = used[t];
+                    vector<int> vv = {t + 1};
+                    while (x != t) {
+                        vv.push_back(x + 1);
+                        x = used[x];
+                    }
+                    vv.push_back(t + 1);
+                    cout << "YES" << "\n" << vv.size() << "\n";
+                    pprint(vv);
+                    return 0;
+                }
+            }
+        }
+    }
+    cout << "NO";
+    return 0;
+}
+
+/*5
+100000 -100 100000 100000 100000
+100000 100000 -1 100000 100000
+100000 100000 100000 -1 100000
+100000 100000 100000 100000 -1
+100000 -1 100000 100000 100000*/
