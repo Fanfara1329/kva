@@ -25,5 +25,5 @@ d = {person.name: person.age for person in people}
 
 print("Все персоны:", *people, "\nПерсоны старше 18 лет:", *filter(lambda p: p.age > 18, people),
       "\nПерсоны старше 21 года:", *filter(lambda p: p.is_old(), people), "\nПерсоны, отсортированные по возрасту:",
-      *sorted(people, key=lambda p: p.age), "\nСловарь персон:", d, "\nСловарь персон, отсортированный по возрасту:\n",
+      *sorted(people, key=lambda p: p.age), "\nСловарь персон:", d, "\nСловарь персон, отсортированный по возрасту:",
       dict(sorted(d.items(), key=lambda item: item[1])), sep='\n')
