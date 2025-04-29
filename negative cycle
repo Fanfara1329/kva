@@ -1,0 +1,65 @@
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int n = 0;
+    std::cin >> n;
+    std::vector<std::vector<int>> graff(n, std::vector<int>(n));
+
+    int inf = 1e5;
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            std::cin >> graff[i][j];
+        }
+    }
+
+    std::vector<int> dist(n, 0);
+    std::vector<int> pred(n, -1);
+    int cycle_start = -1;
+
+    for (int k = 0; k < n; ++k) {
+        cycle_start = -1;
+        for (int u = 0; u < n; ++u) {
+            for (int v = 0; v < n; ++v) {
+                if (graff[u][v] == inf) {
+                    continue;
+                }
+                if (dist[v] > dist[u] + graff[u][v]) {
+                    dist[v] =  dist[u] + graff[u][v];
+                    pred[v] = u;
+                    cycle_start = v;
+                }
+            }
+        }
+
+        if (cycle_start == -1) {
+            break;
+        }
+    }
+
+    if (cycle_start == -1) {
+        std::cout << "NO";
+    }
+    else {
+        std::vector<int> res;
+        int y = cycle_start;
+        for (int i = 0; i < n; ++i)
+            y = pred[y];
+
+        for (int cur = y; ; cur = pred[cur]) {
+            res.push_back(cur);
+            if (cur == y && res.size() > 1) break;
+        }
+        std::reverse(res.begin(), res.end());
+        std::cout << "YES\n";
+        std::cout << res.size() << '\n';
+        for (int i = 0; i < res.size(); ++i) {
+            std::cout << res[i] + 1 << ' ';
+        }
+    }
+    return 0;
+}
