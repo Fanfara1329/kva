@@ -1,0 +1,68 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+#define int long long
+vector<int> roots, sizes, price;
+int mx = 0;
+
+void pprint() {
+    cout << "roots : ";
+    for (auto i : roots)
+        cout << i + 1 << ' ';
+    cout << "\nsizes :";
+    for (auto i : sizes)
+        cout << i << ' ';
+    cout << "\nprice : ";
+    for (auto i : price)
+        cout << i << ' ';
+    cout << "\n";
+}
+
+void build(int n) {
+    roots = vector<int>(n);
+    sizes = vector<int>(n, 1);
+    for (int i = 0 ; i < n ; i++)
+        roots[i] = i;
+    price = vector<int>(n, 0);
+}
+
+int getroot(int n) {
+    if (n == roots[n]) {
+        return n;
+    }
+    return roots[n] = getroot(roots[n]);
+}
+
+void unions(int a, int b, int w) {
+    a = getroot(a);
+    b = getroot(b);
+    if (a == b) {
+        return;
+    }
+    if (sizes[a] < sizes[b])
+        swap(a, b);
+    mx++;
+    roots[b] = a;
+    price[a] += w;
+    price[a] += price[b];
+    sizes[a] += sizes[b];
+}
+
+signed main() {
+    int n, a, b, m, c, w;
+    cin >> n >> m;
+    build(n);
+    vector<tuple<int, int, int>> v(m);
+    for (int i = 0 ; i < m ; i++) {
+        cin >> a >> b >> c;
+        v[i] = {c, --a, --b};
+    }
+    sort(v.begin(), v.end());
+    for (auto [w, i, j] : v) {
+        unions(i, j, w);
+        if (mx == n - 1)
+            break;
+    }
+    cout << price[getroot(0)];
+    return 0;
+}
