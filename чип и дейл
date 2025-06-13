@@ -1,0 +1,127 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+#define int long long
+vector<int> two(30, 0), logs, on, no, w;
+vector<vector<int>> st;
+vector<vector<pair<int, int>>> gr;
+vector<pair<int, int>> pr, price;
+int cnt = 0;
+
+void pprint(vector<int> v) {
+    for (auto i : v)
+        cout << i << ' ';
+    cout << "\n";
+}
+
+void print(vector<vector<int>> v) {
+    for (auto i : v) {
+        for (auto j : i)
+            cout << j << ' ';
+        cout << "\n";
+    }
+}
+
+vector<vector<int>> build(int n, vector<int> &v) {
+    int t = 1;
+    for (int i = 0 ; i < 30 ; i++) {
+        two[i] = t;
+        t *= 2;
+    }
+    logs = vector<int>(n + 1, 0);
+    for (int i = 2, k = 1 ; i < n + 1 ; i++) {
+        if (!(i % two[k])) {
+            k++;
+        }
+        logs[i] = k - 1;
+    }
+    vector<vector<int>> ans(logs[n] + 1);
+    ans[0] = v;
+    for (int i = 1, k = 2 ; i < ans.size() ; i++) {
+        for (int j = 0 ; j < n - k + 1 ; j++) {
+            ans[i].push_back(min(ans[i - 1][j], ans[i - 1][j + k / 2]));
+        }
+        k *= 2;
+    }
+    //print(ans);
+    return ans;
+}
+
+int ireq(int l, int r) {
+    int len = r - l + 1;
+    return min(st[logs[len]][l], st[logs[len]][r - two[logs[len]] + 1]);
+}
+
+int lca(int a, int b) {
+    a = on[a], b = on[b];
+    return no[ireq(min(pr[a].first, pr[b].first), max(pr[a].second, pr[b].second))];
+}
+
+void ireqq(int l, int r) {
+    int lc = lca(l, r);
+    int len = price[l].second + price[r].second - 2 * price[lc].second;
+    int cost = -(price[l].first - price[lc].first) + (price[r].first - price[lc].first);
+    if (cost == len)
+        cout << "Yes\n";
+    else
+        cout << "No\n";
+}
+
+void dfs(int i, int p) {
+    on[i] = cnt;
+    no[cnt] = i;
+    pr[cnt] = {w.size(), w.size()};
+    w.push_back(cnt);
+    cnt++;
+    for (auto j : gr[i]) {
+        if (j.first != p) {
+            dfs(j.first, i);
+            pr[on[i]].second = w.size();
+            w.push_back(on[i]);
+        }
+    }
+}
+
+void ppprint(vector<pair<int, int>> pr) {
+    for (int i = 0 ; i < pr.size() ; i++) {
+        cout << i << " : " << pr[i].first << ' ' << pr[i].second << "\n";
+    }
+}
+
+void dfs1(int i, int cnt, int len, int p) {
+    price[i] = {cnt, len};
+    for (auto j : gr[i]) {
+        if (j.first != p)
+            dfs1(j.first, cnt + j.second, len + 1, i);
+    }
+}
+
+signed main() {
+    int n, m;
+    cin >> n;
+    int a1, a2, x, y, z;
+    on = vector<int>(n, -1);
+    no = vector<int>(n, -1);
+    pr = vector<pair<int, int>>(n);
+    price = vector<pair<int, int>>(n);
+    gr = vector<vector<pair<int, int>>>(n);
+    int a, b;
+    for (int i = 1 ; i < n ; i++) {
+        cin >> a;
+        cin >> b;
+        a--;
+        b--;
+        gr[a].push_back({b, 1});
+        gr[b].push_back({a, -1});
+    }
+    dfs(0, -1);
+    st = build(w.size(), w);
+    dfs1(0, 0, 0, -1);
+    cin >> m;
+    for (int i = 0 ; i < m ; i++) {
+        cin >> a >> b;
+        a--;
+        b--;
+        ireqq(a, b);
+    }
+}
